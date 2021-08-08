@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { fetchImages } from './api';
+import { fetchImageUrls, fetchBreeds } from './api';
 
 function Header() {
   return (
@@ -47,22 +47,39 @@ function Gallery(props) {
   );
 }
 
+function Select(props) {
+  const { breeds } = props;
+  return (
+    <select name="breed" defaultValue="shiba">
+      <option hidden>shiba</option>
+      {breeds.map(breed => {
+        return (
+          <option key={breed} value={breed}>{breed}</option>
+        );
+      })}
+    </select>
+  )
+}
+
 function Form(props) {
   function handleSubmit(event) {
     event.preventDefault();
     const { breed } = event.target.elements;
     props.onFormSubmit(breed.value);
   }
+  const [options, setOptions] = useState([]);
+  useEffect(() => {
+    fetchBreeds().then(breeds => {
+      setOptions(breeds);
+    });
+  }, []);
   return (
     <div>
       <form onSubmit={handleSubmit}>
         <div className="field has-addons">
           <div className="control is-expanded">
             <div className="select is-fullwidth">
-              <select name="breed" defaultValue="shiba">
-                <option value="shiba">Shiba</option>
-                <option value="akita">Akita</option>
-              </select>
+              <Select breeds={options} />
             </div>
           </div>
           <div className="control">
@@ -79,12 +96,12 @@ function Form(props) {
 function Main() {
   const [urls, setUrls] = useState(null);
   useEffect(() => {
-    fetchImages('shiba').then(urls => {
+    fetchImageUrls('shiba').then(urls => {
       setUrls(urls)
     });
   }, []);
   function reloadImages(breed) {
-    fetchImages(breed).then((urls) => {
+    fetchImageUrls(breed).then((urls) => {
       setUrls(urls);
     });
   }
