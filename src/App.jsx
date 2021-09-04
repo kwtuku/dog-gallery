@@ -1,6 +1,16 @@
 import { useEffect, useState } from 'react';
 import { fetchImageUrls, fetchBreeds } from './api';
 
+function App() {
+  return (
+    <div>
+      <Header />
+      <Main />
+      <Footer />
+    </div>
+  );
+}
+
 function Header() {
   return (
     <header className="hero is-dark is-bold">
@@ -13,39 +23,34 @@ function Header() {
   );
 }
 
-function Image(props) {
-  return (
-    <div className="card">
-      <div className="card-image">
-        <figure className="image">
-          <img src={props.src} alt="cute dog!" />
-        </figure>
-      </div>
-    </div>
-  );
-}
+function Main() {
+  const [urls, setUrls] = useState(null);
 
-function Loading() {
-  return <p>Loading...</p>;
-}
+  useEffect(() => {
+    fetchImageUrls('shiba').then(urls => {
+      setUrls(urls)
+    });
+  }, []);
 
-function Gallery(props) {
-  const { urls } = props;
-
-  if (urls == null) {
-    return <Loading />;
+  function reloadImages(breed) {
+    fetchImageUrls(breed).then((urls) => {
+      setUrls(urls);
+    });
   }
 
   return (
-    <div className="columns is-vcentered is-multiline">
-      {urls.map(url => {
-        return (
-          <div key={url} className="column is-3">
-            <Image src={url} />
-          </div>
-        );
-      })}
-    </div>
+    <main>
+      <section className="section">
+        <div className="container">
+          <Form onFormSubmit={reloadImages} />
+        </div>
+      </section>
+      <section className="section">
+        <div className="container">
+          <Gallery urls={urls} />
+        </div>
+      </section>
+    </main>
   );
 }
 
@@ -96,34 +101,39 @@ function Form(props) {
   );
 }
 
-function Main() {
-  const [urls, setUrls] = useState(null);
+function Gallery(props) {
+  const { urls } = props;
 
-  useEffect(() => {
-    fetchImageUrls('shiba').then(urls => {
-      setUrls(urls)
-    });
-  }, []);
-
-  function reloadImages(breed) {
-    fetchImageUrls(breed).then((urls) => {
-      setUrls(urls);
-    });
+  if (urls == null) {
+    return <Loading />;
   }
 
   return (
-    <main>
-      <section className="section">
-        <div className="container">
-          <Form onFormSubmit={reloadImages} />
-        </div>
-      </section>
-      <section className="section">
-        <div className="container">
-          <Gallery urls={urls} />
-        </div>
-      </section>
-    </main>
+    <div className="columns is-vcentered is-multiline">
+      {urls.map(url => {
+        return (
+          <div key={url} className="column is-3">
+            <Image src={url} />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function Loading() {
+  return <p>Loading...</p>;
+}
+
+function Image(props) {
+  return (
+    <div className="card">
+      <div className="card-image">
+        <figure className="image">
+          <img src={props.src} alt="cute dog!" />
+        </figure>
+      </div>
+    </div>
   );
 }
 
@@ -137,16 +147,6 @@ function Footer() {
         </p>
       </div>
     </footer>
-  );
-}
-
-function App() {
-  return (
-    <div>
-      <Header />
-      <Main />
-      <Footer />
-    </div>
   );
 }
 
