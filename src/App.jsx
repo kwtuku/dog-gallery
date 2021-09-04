@@ -31,9 +31,11 @@ function Loading() {
 
 function Gallery(props) {
   const { urls } = props;
+
   if (urls == null) {
     return <Loading />;
   }
+
   return (
     <div className="columns is-vcentered is-multiline">
       {urls.map(url => {
@@ -47,39 +49,40 @@ function Gallery(props) {
   );
 }
 
-function Select(props) {
-  const { breeds } = props;
-  return (
-    <select name="breed" defaultValue="shiba">
-      <option hidden>shiba</option>
-      {breeds.map(breed => {
-        return (
-          <option key={breed} value={breed}>{breed}</option>
-        );
-      })}
-    </select>
-  )
-}
-
 function Form(props) {
   function handleSubmit(event) {
     event.preventDefault();
     const { breed } = event.target.elements;
     props.onFormSubmit(breed.value);
   }
+
+  function handleChange() {
+    const select = document.getElementById('select')
+    props.onFormSubmit(select.value);
+  }
+
   const [options, setOptions] = useState([]);
+
   useEffect(() => {
     fetchBreeds().then(breeds => {
       setOptions(breeds);
     });
   }, []);
+
   return (
     <div>
       <form onSubmit={handleSubmit}>
         <div className="field has-addons">
           <div className="control is-expanded">
             <div className="select is-fullwidth">
-              <Select breeds={options} />
+              <select name="breed" defaultValue="shiba" id="select" onChange={handleChange}>
+                <option hidden>shiba</option>
+                {options.map(breed => {
+                  return (
+                    <option key={breed} value={breed}>{breed}</option>
+                  );
+                })}
+              </select>
             </div>
           </div>
           <div className="control">
@@ -95,16 +98,19 @@ function Form(props) {
 
 function Main() {
   const [urls, setUrls] = useState(null);
+
   useEffect(() => {
     fetchImageUrls('shiba').then(urls => {
       setUrls(urls)
     });
   }, []);
+
   function reloadImages(breed) {
     fetchImageUrls(breed).then((urls) => {
       setUrls(urls);
     });
   }
+
   return (
     <main>
       <section className="section">
