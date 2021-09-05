@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { fetchImageUrls, fetchBreeds } from './api';
 
 function App() {
@@ -61,9 +61,10 @@ function Form(props) {
     props.onFormSubmit(breed.value);
   }
 
+  const selected = useRef(null);
+
   function handleChange() {
-    const select = document.getElementById('select')
-    props.onFormSubmit(select.value);
+    props.onFormSubmit(selected.current.value);
   }
 
   const [options, setOptions] = useState([]);
@@ -80,7 +81,7 @@ function Form(props) {
         <div className="field has-addons">
           <div className="control is-expanded">
             <div className="select is-fullwidth">
-              <select name="breed" defaultValue="shiba" id="select" onChange={handleChange}>
+              <select name="breed" defaultValue="shiba" onChange={handleChange} ref={selected}>
                 <option hidden>shiba</option>
                 {options.map(breed => {
                   return (
