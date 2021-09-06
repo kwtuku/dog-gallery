@@ -127,13 +127,36 @@ function Loading() {
 }
 
 function Image(props) {
+  const [show, setShow] = useState(false)
+
   return (
-    <div className="card">
-      <div className="card-image">
+    <>
+      <div className="card">
+        <div className="card-image">
+          <figure className="image">
+            <img src={props.src} alt="cute dog!" onClick={() => setShow(true)} />
+          </figure>
+        </div>
+      </div>
+      <Modal show={show} setShow={setShow} src={props.src} />
+    </>
+  );
+}
+
+function Modal(props) {
+  if (!props.show) {
+    return null;
+  }
+
+  return (
+    <div className="modal is-active">
+      <div className="modal-background" onClick={() => props.setShow(false)} />
+      <div className="modal-content">
         <figure className="image">
-          <img src={props.src} alt="cute dog!" />
+          <img id="img" src={props.src} alt="cute dog!" />
         </figure>
       </div>
+      <button className="modal-close is-large" aria-label="close" onClick={() => props.setShow(false)}></button>
     </div>
   );
 }
