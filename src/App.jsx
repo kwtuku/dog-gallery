@@ -127,36 +127,49 @@ function Loading() {
 }
 
 function Image(props) {
-  const [show, setShow] = useState(false)
+  const [showModal, setShowModal] = useState(false)
+  const [aspectRatio, setAspectRatio] = useState('')
+
+  function handleClick(event) {
+    setShowModal(true)
+    setAspectRatio(event.target.naturalHeight / event.target.naturalWidth)
+  }
 
   return (
     <>
       <div className="card">
         <div className="card-image">
           <figure className="image">
-            <img src={props.src} alt="cute dog!" onClick={() => setShow(true)} />
+            <img src={props.src} alt="cute dog!" onClick={handleClick} />
           </figure>
         </div>
       </div>
-      <Modal show={show} setShow={setShow} src={props.src} />
+      <Modal showModal={showModal} setShowModal={setShowModal} src={props.src} aspectRatio={aspectRatio} />
     </>
   );
 }
 
 function Modal(props) {
-  if (!props.show) {
+  if (!props.showModal) {
     return null;
+  }
+
+  let style;
+  if (props.aspectRatio > 0.85) {
+    style = {
+      width: window.innerHeight * 0.9 / props.aspectRatio,
+    };
   }
 
   return (
     <div className="modal is-active">
-      <div className="modal-background" onClick={() => props.setShow(false)} />
-      <div className="modal-content">
+      <div className="modal-background" onClick={() => props.setShowModal(false)} />
+      <div className="modal-content" style={style} >
         <figure className="image">
-          <img id="img" src={props.src} alt="cute dog!" />
+          <img src={props.src} alt="cute dog!" />
         </figure>
       </div>
-      <button className="modal-close is-large" aria-label="close" onClick={() => props.setShow(false)}></button>
+      <button className="modal-close is-large" aria-label="close" onClick={() => props.setShowModal(false)}></button>
     </div>
   );
 }
