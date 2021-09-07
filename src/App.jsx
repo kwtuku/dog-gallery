@@ -1,5 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { fetchImageUrls, fetchBreeds } from './api';
+
+function App() {
+  return (
+    <div>
+      <Header />
+      <Main />
+      <Footer />
+    </div>
+  );
+}
 
 function Header() {
   return (
@@ -13,98 +23,21 @@ function Header() {
   );
 }
 
-function Image(props) {
-  return (
-    <div className="card">
-      <div className="card-image">
-        <figure className="image">
-          <img src={props.src} alt="cute dog!" />
-        </figure>
-      </div>
-    </div>
-  );
-}
-
-function Loading() {
-  return <p>Loading...</p>;
-}
-
-function Gallery(props) {
-  const { urls } = props;
-  if (urls == null) {
-    return <Loading />;
-  }
-  return (
-    <div className="columns is-vcentered is-multiline">
-      {urls.map(url => {
-        return (
-          <div key={url} className="column is-3">
-            <Image src={url} />
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-function Select(props) {
-  const { breeds } = props;
-  return (
-    <select name="breed" defaultValue="shiba">
-      <option hidden>shiba</option>
-      {breeds.map(breed => {
-        return (
-          <option key={breed} value={breed}>{breed}</option>
-        );
-      })}
-    </select>
-  )
-}
-
-function Form(props) {
-  function handleSubmit(event) {
-    event.preventDefault();
-    const { breed } = event.target.elements;
-    props.onFormSubmit(breed.value);
-  }
-  const [options, setOptions] = useState([]);
-  useEffect(() => {
-    fetchBreeds().then(breeds => {
-      setOptions(breeds);
-    });
-  }, []);
-  return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <div className="field has-addons">
-          <div className="control is-expanded">
-            <div className="select is-fullwidth">
-              <Select breeds={options} />
-            </div>
-          </div>
-          <div className="control">
-            <button type="submit" className="button is-dark">
-              Reload
-            </button>
-          </div>
-        </div>
-      </form>
-    </div>
-  );
-}
-
 function Main() {
   const [urls, setUrls] = useState(null);
+
   useEffect(() => {
     fetchImageUrls('shiba').then(urls => {
       setUrls(urls)
     });
   }, []);
+
   function reloadImages(breed) {
     fetchImageUrls(breed).then((urls) => {
       setUrls(urls);
     });
   }
+
   return (
     <main>
       <section className="section">
@@ -121,6 +54,126 @@ function Main() {
   );
 }
 
+function Form(props) {
+  function handleSubmit(event) {
+    event.preventDefault();
+    const { breed } = event.target.elements;
+    props.onFormSubmit(breed.value);
+  }
+
+  const selected = useRef(null);
+
+  function handleChange() {
+    props.onFormSubmit(selected.current.value);
+  }
+
+  const [options, setOptions] = useState([]);
+
+  useEffect(() => {
+    fetchBreeds().then(breeds => {
+      setOptions(breeds);
+    });
+  }, []);
+
+  return (
+    <div>
+      <form onSubmit={handleSubmit}>
+        <div className="field has-addons">
+          <div className="control is-expanded">
+            <div className="select is-fullwidth">
+              <select name="breed" defaultValue="shiba" onChange={handleChange} ref={selected}>
+                <option hidden>shiba</option>
+                {options.map(breed => {
+                  return (
+                    <option key={breed} value={breed}>{breed}</option>
+                  );
+                })}
+              </select>
+            </div>
+          </div>
+          <div className="control">
+            <button type="submit" className="button is-dark">
+              Reload
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+function Gallery(props) {
+  const { urls } = props;
+
+  if (urls == null) {
+    return <Loading />;
+  }
+
+  return (
+    <div className="columns is-vcentered is-multiline">
+      {urls.map(url => {
+        return (
+          <div key={url} className="column is-3">
+            <Image src={url} />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function Loading() {
+  return <p>Loading...</p>;
+}
+
+function Image(props) {
+  const [showModal, setShowModal] = useState(false)
+  const [aspectRatio, setAspectRatio] = useState('')
+
+  function handleClick(event) {
+    setShowModal(true)
+    setAspectRatio(event.target.naturalHeight / event.target.naturalWidth)
+  }
+
+  return (
+    <>
+      <div className="card">
+        <div className="card-image">
+          <figure className="image">
+            <img src={props.src} alt="cute dog!" onClick={handleClick} />
+          </figure>
+        </div>
+      </div>
+      <Modal showModal={showModal} setShowModal={setShowModal} src={props.src} aspectRatio={aspectRatio} />
+    </>
+  );
+}
+
+function Modal(props) {
+  if (!props.showModal) {
+    return null;
+  }
+
+  let style;
+  if (props.aspectRatio > 0.85) {
+    style = {
+      width: window.innerHeight * 0.9 / props.aspectRatio,
+    };
+  }
+
+  return (
+    <div className="modal is-active">
+      <div className="modal-background" onClick={() => props.setShowModal(false)} />
+      <div className="modal-content" style={style} >
+        <figure className="image">
+          <img src={props.src} alt="cute dog!" />
+        </figure>
+      </div>
+      <button className="modal-close is-large" aria-label="close" onClick={() => props.setShowModal(false)}></button>
+    </div>
+  );
+}
+
 function Footer() {
   return (
     <footer className="footer">
@@ -131,16 +184,6 @@ function Footer() {
         </p>
       </div>
     </footer>
-  );
-}
-
-function App() {
-  return (
-    <div>
-      <Header />
-      <Main />
-      <Footer />
-    </div>
   );
 }
 
