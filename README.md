@@ -1,70 +1,39 @@
-# Getting Started with Create React App
+# [Dog Gallery](https://dog-gallery-kwtuku.netlify.app/)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[Dog API](https://dog.ceo/dog-api/)から取得した犬の画像を表示するサイトです。
 
-## Available Scripts
+[Reactチュートリアル1：犬画像ギャラリーを作ろう](https://zenn.dev/likr/articles/6be53ca64f29aa035f07)で作成したものを拡張しました。
 
-In the project directory, you can run:
+犬種の選択肢をAPIで取得、useRefを用いてselect要素の選択肢が変更されると画像を取得するAPI呼び出すこと、画像をクリックするとモーダルを表示することができるようにしました。
 
-### `yarn start`
+モーダルに表示される画像はアスペクト比によってスタイルを変更し、どんなアスペクト比の画像でもうまく画面内に収まるようになっています。
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+サイトのURLはこちらです。
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+https://dog-gallery-kwtuku.netlify.app/
 
-### `yarn test`
+# 使用技術
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 開発環境
 
-### `yarn build`
+* Windows 10 Home
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+* Docker
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+* Docker Compose
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## フロントエンド
 
-### `yarn eject`
+* HTML
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+* Bulma
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+* JavaScript
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+* Node.js 16.6.0
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+* React 17.0.2
 
-## Learn More
+## インフラストラクチャ
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+* Netlify
